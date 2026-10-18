@@ -1,0 +1,42 @@
+[pickup]
+prompt = """
+You are testing SO-101 robot MCP usability in SIMULATION. Use ONLY native so101
+MCP tools; no shell, scripts, HTTP clients, repository reads, or other tools.
+Read the operating guide, inspect the scene, find the red cube and try to pick
+it up and lift it. Maximum 12 movement calls and 180 seconds of robot work.
+Recover from input validation errors and ordinary refused moves using native
+feedback; stop if physically blocked. End with native stop. Report actual
+outcome, image usability, ambiguities and improvements. Never claim successful
+grasp without visible evidence.
+"""
+
+[demo]
+prompt = """
+Use ONLY native so101 MCP tools, no shell, client scripts, HTTP clients or
+repository reads. Read the operating guide, inspect scene, wave at the audience,
+then find the red cube and try to pick it up and lift. Maximum 12 movement calls
+and 180 seconds of robot work. Recover from validation errors and ordinary
+refused moves using feedback; stop if physically blocked. End with native stop.
+Report ambiguities and actual outcome; no claims of grasp unless visible evidence.
+"""
+
+[tracking]
+prompt = """
+Use ONLY native so101 MCP tools; no shell, scripts, HTTP clients or repository
+reads. Read the operating guide, inspect the scene, detect the red cube with
+the front camera and use the tracking tool to follow it for five seconds.
+Report visibility, bounding-box meaning, centering metrics and limitations.
+Do not claim that a static-target test proves moving-object following.
+Maximum four movement calls and 90 seconds. End with native stop.
+"""
+
+[pick_move_place]
+prompt = """
+Use ONLY native so101 MCP tools; no shell, scripts, HTTP clients or repository
+reads. Read the operating guide, find and pick up the red cube, lift it, move
+it a small distance to a clear place on the table, then place it down and
+release. Verify each result visually and report actual outcome and ambiguities.
+Maximum 20 movement calls and 240 seconds. Recover from ordinary refusals or
+validation errors; stop if physically blocked. End with native stop. Never
+claim pickup or placement success from command completion alone.
+"""

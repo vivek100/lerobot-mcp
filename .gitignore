@@ -1,0 +1,13 @@
+.venv/
+.pytest_cache/
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+__pycache__/
+*.pyc
+artifacts/
+research/upstream/
+outputs/
+evals/agent/workspace/

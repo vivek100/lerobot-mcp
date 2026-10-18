@@ -1,0 +1,18 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Tools · SO-101 MCP</title><link rel="stylesheet" href="style.css"></head><body>
+<header><div class="brand">SO-101 <span>Robot MCP / Demo console</span></div><nav aria-label="Demo pages"><a href="index.html">Agent view</a><a href="architecture.html" aria-current="page">Tools</a><a href="evaluations.html">Optimization loop</a></nav></header>
+<main><p class="eyebrow">02 / The agent's toolbox</p><h1>Tools that turn intent into action</h1><p class="lead">The agent reads the guide, looks at the scene, makes a bounded move, then checks what actually happened. The same tools work in simulation and on the physical arm.</p>
+<div class="grid"><section class="card"><h2>Understand the scene</h2><dl>
+<dt><code>robot_guide</code></dt><dd>Learn forward, left, up, camera conventions, limits and recovery.</dd>
+<dt><code>observe</code></dt><dd>See measured pose, remaining room, real photos and simulated views.</dd>
+<dt><code>detect_target</code></dt><dd>Find the largest matching color or face and show its image bounding box.</dd>
+<dt><code>list_animations</code></dt><dd>Discover gestures, held states and speech moods.</dd>
+<dt><code>show_wrist_camera</code></dt><dd>Open a read-only live camera viewer in an MCP Apps-compatible host, with this web page as fallback.</dd></dl></section>
+<section class="card"><h2>Move, follow and verify</h2><dl>
+<dt><code>move</code></dt><dd>Move the gripper in centimetres; adjust tilt and roll.</dd>
+<dt><code>set_gripper</code></dt><dd>Open or close the jaws without moving the arm.</dd>
+<dt><code>track</code></dt><dd>Follow a visible color or face for a bounded time.</dd>
+<dt><code>run_animation</code></dt><dd>Wave, nod, hold a thinking pose or speak.</dd>
+<dt><code>stop</code></dt><dd>Cancel the active motion and hold.</dd>
+<dt><code>go_rest</code></dt><dd>Lift and fold the arm into its rest pose.</dd></dl></section></div>
+<section class="card"><h2>Every action comes with evidence</h2><div class="steps" style="margin-top:20px"><div><span class="step-number">01</span><h3>Read the guide</h3><p>Shared words and units, fixed to the robot base.</p></div><div><span class="step-number">02</span><h3>See the scene</h3><p>Physical photos show objects. Model previews explain arm posture.</p></div><div><span class="step-number">03</span><h3>Act locally</h3><p>The local runtime applies joint, speed, table and contact guards.</p></div><div><span class="step-number">04</span><h3>Verify the result</h3><p>Read the outcome and inspect the next image. Closure alone does not prove a grasp.</p></div></div></section>
+<p class="note">Real-camera boxes are image coordinates. Metric projection needs calibration; the physical camera cone is illustrative. Wrist tracking centers the image; fixed-front tracking only approximates horizontal pointing.</p><p class="footer">Live camera viewing does not move the robot. The viewer's internal frame-refresh tool is hidden from agents in compatible MCP Apps hosts.</p></main></body></html>

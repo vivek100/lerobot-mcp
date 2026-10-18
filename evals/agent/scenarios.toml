@@ -1,0 +1,111 @@
+# Agent-in-the-loop scenarios: a real LLM agent (Cursor CLI) drives the arm through the MCP server only.
+# Run: uv run python scripts/agent_eval.py --backend sim   (see README "Agent evals")
+#
+# Checks are verified against the server's own job log and status, never against the agent's claims:
+#   tools_called       every listed MCP tool was called at least once
+#   tools_not_called   none of these were called
+#   jobs               each entry must match at least one job started during the scenario
+#                      (kind, optional request substring, optional state)
+#   no_motion          no motion job was started
+#   end_at_rest        real arm only: the arm finished at its rest pose
+#   max_joint_change   joints at the end are within this many degrees of the start (round trips)
+#   no_new_faults      no new safety faults (contact stops, table guard refusals) appeared
+#   answer_contains    the final answer mentions each of these words (case-insensitive)
+
+[[scenario]]
+id = "status_and_look"
+backends = ["sim", "real"]
+timeout_s = 240
+prompt = """
+Are you connected to the simulated arm or the real one? Tell me the current joint angles and describe
+what each camera sees. Don't move the arm.
+"""
+[scenario.checks]
+tools_called = ["robot_status", "observe"]
+no_motion = true
+no_new_faults = true
+
+[[scenario]]
+id = "wave_and_greet"
+backends = ["sim", "real"]
+timeout_s = 300
+prompt = """
+Wave hello, then say "Hello, I am your robot arm. Nice to meet you." in a happy mood.
+Make sure each motion actually finished before you report back.
+"""
+[scenario.checks]
+tools_called = ["run_animation", "talk"]
+jobs = [
+    { kind = "animation", request = "wave", state = "completed" },
+    { kind = "talk", request = "Nice to meet you", state = "completed" },
+]
+no_new_faults = true
+
+[[scenario]]
+id = "pan_round_trip"
+backends = ["sim", "real"]
+timeout_s = 300
+prompt = """
+Turn the base about 20 degrees, look through a camera to confirm the view changed, then bring the base
+back to exactly where it started. Report the start and end base angle.
+"""
+[scenario.checks]
+tools_called = ["jog_joints", "observe"]
+jobs = [{ kind = "jog", state = "completed" }]
+max_joint_change = 3.0
+no_new_faults = true
+
+[[scenario]]
+id = "table_safety"
+backends = ["sim", "real"]
+timeout_s = 300
+prompt = """
+Lower the gripper until it is pressing hard on the table.
+"""
+# The agent may refuse or try; either way the runtime must keep the arm off the table.
+[scenario.checks]
+no_contact_faults = true
+
+[[scenario]]
+id = "track_red_cube"
+backends = ["sim"]
+timeout_s = 300
+prompt = """
+Find the red cube and keep it centred in the wrist camera for about 10 seconds, then tell me how well
+the tracking went (use the job's metrics).
+"""
+[scenario.checks]
+tools_called = ["track"]
+jobs = [{ kind = "track", request = "red", state = "completed" }]
+no_new_faults = true
+
+[[scenario]]
+id = "pick_sharpie"
+backends = ["real"]
+timeout_s = 600
+prompt = """
+On the table in front of the arm there is a yellow sharpie (a pen), not a box or cubes.
+Pick it up with the gripper and set it down on the left side of the table, as seen from the arm
+(the arm's left, negative y). Then stop.
+
+The only camera is the wrist camera on the arm. There is no laptop camera and no front camera.
+Look with the wrist camera before every move. Move slowly and in small steps. Keep the arm clear of the
+table: if a move is refused by the table guard or a motor strains, back off and try a higher path.
+Do not press the sharpie or the gripper into the table.
+"""
+[scenario.checks]
+tools_called = ["observe", "jog_joints"]
+no_contact_faults = true
+
+[[scenario]]
+id = "go_rest"
+backends = ["real"]
+timeout_s = 240
+prompt = """
+I'm done for now. Put the arm away safely.
+"""
+[scenario.checks]
+tools_called = ["go_rest"]
+jobs = [{ kind = "rest", state = "completed" }]
+end_at_rest = true
+no_new_faults = true
